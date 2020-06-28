@@ -1,7 +1,7 @@
 <?php
-	$servername = "localhost";
-	$username = "root";
-	$password = "";
+	$servername = "den1.mysql1.gear.host";
+	$username = "mechanic";
+	$password = "F@izche1";
 	$dbname = "mechanic";
 	$tablename = "bookingcalendar";
 
