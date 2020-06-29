@@ -56,7 +56,7 @@ if(empty($_SESSION['captcha3'] ) ||
 			$ServiceName = implode("","$f");
 	    } echo $ServiceName;
 	
-	}
+	*/
 		
 		// prevent double booking
 		$sql = "SELECT * FROM $tablename WHERE ServiceId='$f' AND (start_day>=$start_day OR end_day>=$start_day) AND canceled=0";
@@ -73,7 +73,7 @@ if(empty($_SESSION['captcha3'] ) ||
 				}
 			}				
 		}
-			*/	
+				
 		$sql = "INSERT INTO $tablename (phone, start_day, end_day, start_time, end_time, canceled, CustomerId )
 			VALUES ('$phone', $start_day, $end_day, $start_time, $end_time, 0, $CustomerId)";
 			
