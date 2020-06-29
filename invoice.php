@@ -286,7 +286,7 @@ if(isset($_SESSION["email"])){
       box-sizing:border-box;
       }
     </style>
-    <script src="js/bootstrap-datepicker1.js"></script>
+   <!--  <script src="js/bootstrap-datepicker1.js"></script>
 	<script src = "https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <script>
       $(document).ready(function(){
@@ -295,7 +295,7 @@ if(isset($_SESSION["email"])){
           autoclose: true
         });
       });
-    </script>
+    </script> -->
   
     
 	
@@ -312,7 +312,7 @@ if(isset($_SESSION["email"])){
 				<li class="active"><a href="invoice.php"><i class="fa fa-sticky-note"></i> Invoice</a></li>
 				<li><a href="customer.php"><i class="fa fa-user"></i> Client List</a></li>
 				<li><a href="service.php"><i class="fa fa-wrench"></i> Services</a></li>
-				
+				<li><a href="#"><i class="fa fa-book"></i> Profile</a></li>
 				
             </ul>
         </nav>
@@ -320,37 +320,19 @@ if(isset($_SESSION["email"])){
         <!-- Page Content  -->
         <div id="content">
 
-           <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 <div class="container-fluid">
 
-                    <button type="button" id="sidebarCollapse" class="btn btn-info">
+                    <button type="button" id="sidebarCollapse" class="btn btnToggle">
                         <i class="fas fa-align-left"></i>
-                        
                     </button>
-                    <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <i class="fas fa-align-justify"></i>
-                    </button>
-
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="nav navbar-nav ml-auto">
-                            <li class="nav-item active">
-                                <a href="change.php" class="btn">
-                        <span class="fa fa-unlock-alt" title="Change Password"></span>
-                            </li>
-                            <li class="nav-item">
-                                <a href="question.php" class="btn">
-                        <span class="fa fa-book" title="Security Question"></span>
-                            </li>
-                         
-                            <li class="nav-item">
-                                 <a href="logout.php" class="btn">
+                    <a href="logout.php" class="btn btn-warning">
                         <span class="fas fa-sign-out-alt" title="Logout"></span>
                     </a>
-                            </li>
-                        </ul>
-                    </div>
+
                 </div>
             </nav>
+            
 			
             
 			
@@ -380,6 +362,10 @@ if(isset($_SESSION["email"])){
               $display = "SELECT CustomerId, Fullname FROM `customer`";
               $result = mysqli_query ($con, $display) or die (mysqli_error($con));
 
+              date_default_timezone_set('Asia/Kuala_Lumpur');
+              $time = date("H:i");
+              $date = date('Y-m-d');
+
               while($row = mysqli_fetch_assoc($result)){
                 $name .="<option value = '{$row['CustomerId']}' > {$row['Fullname']} </option>";
               } 
@@ -394,7 +380,7 @@ if(isset($_SESSION["email"])){
                     <div class="col-md-4">
                       Reverse Charge<br />
                       <input type="text" name="order_no" id="order_no" class="form-control input-sm" value="<?php echo uniqid();?>" readonly />
-                      <input type="text" name="order_date" id="order_date" class="form-control input-sm" readonly placeholder="Select Invoice Date" />
+                      <input type="text" name="order_date" id="order_date" value="<?php echo $date;?>" class="form-control input-sm" readonly/>
                       <input type="text" name="status" id="status" class="form-control input-sm" readonly value="Unpaid" />
                     </div>
                   </div>
@@ -954,13 +940,4 @@ return true;
 }
 });
 </script>
-	  
-	
-	
-	 <script type="text/javascript">
-        $(document).ready(function () {
-            $('#sidebarCollapse').on('click', function () {
-                $('#sidebar').toggleClass('active');
-            });
-        });
-    </script>
+
