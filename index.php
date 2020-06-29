@@ -130,12 +130,7 @@
 							<?php  
 						  
 						  
-                          $sqlc = "SELECT SUM(i.order_item_final_amount) AS 'TotalAmount', MONTHNAME(o.order_date) AS 'Month'
-									from tbl_order_item i NATURAL JOIN tbl_order o
-									where item_name = 'Labour Cost'
-									AND payment_status = 'Paid'
-									GROUP BY MONTHNAME(o.order_date)
-                                    ORDER BY MONTHNAME(o.order_date) ASC";
+                          $sqlc = "SELECT * FROM `profit`";
 							$resultc= mysqli_query($con,$sqlc);
 
 							if(mysqli_num_rows($resultc) > 0 )
@@ -159,44 +154,7 @@
       }
     </script>	
 			
-	<script type="text/javascript">
-      google.charts.load('current', {'packages':['corechart']});
-      google.charts.setOnLoadCallback(drawChart);
-
-      function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-          ['Month', 'Total Profit'],
-							<?php  
-						  
-						  
-                          $sqlc = "SELECT SUM(i.order_item_final_amount) AS 'TotalAmount', MONTHNAME(o.order_date) AS 'Month'
-									from tbl_order_item i NATURAL JOIN tbl_order o
-									where item_name = 'Labour Cost'
-									AND payment_status = 'Paid'
-									GROUP BY MONTHNAME(o.order_date)
-                                    ORDER BY MONTHNAME(o.order_date) ASC";
-							$resultc= mysqli_query($con,$sqlc);
-
-							if(mysqli_num_rows($resultc) > 0 )
-							{
-								while($rowc = mysqli_fetch_array($resultc))
-							{ 
-								echo "['".$rowc["Month"]."', ".$rowc["TotalAmount"]."],";  
-							} 
-							}
-							?>  
-        ]);
-
-        var options = {
-          title: 'Profit',
-          hAxis: {title: 'Month',  titleTextStyle: {color: '#333'}},
-          vAxis: {minValue: 0}
-        };
-
-        var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
-        chart.draw(data, options);
-      }
-    </script>		
+	
 			
 				<div class="row">
 				
@@ -208,10 +166,7 @@
                                         <i class="fa fa-user fa-4x"></i>
                                     </div>
                                     <?php
-                                        $sqlcat = "SELECT COUNT(CustomerId) AS 'TOTALCAT'
-										FROM customer
-										where MONTH(date_register) = MONTH(CURDATE())
-										AND   YEAR(date_register) = YEAR(CURDATE())";
+                                        $sqlcat = "SELECT * FROM `totalcat`";
                                         $resultcat= mysqli_query($con,$sqlcat);
 
                                         if(mysqli_num_rows($resultcat) > 0 )
@@ -333,11 +288,7 @@
           ['ServiceName', 'Total'],
           <?php
 
-            $se = "SELECT ServiceName, COUNT(CustomerId) AS 'ServiceCount'
-				   FROM appointment 
-				   NATURAL JOIN bookingcalendar
-				   NATURAL JOIN Services
-				   GROUP BY ServiceId";
+            $se = "SELECT * FROM `servicecount`";
             $re = mysqli_query($con,$se) or die (mysqli_error($con));
                         
             while($rowwe = mysqli_fetch_assoc($re))
@@ -394,12 +345,7 @@
                           
                           <tbody>
                             <?php
-                                $sql = "SELECT id, phone, FROM_UNIXTIME(start_day,'%Y-%m-%d') AS 'STARTDATE', 
-								FROM_UNIXTIME(end_day,'%Y-%m-%d') AS 'ENDDATE', FROM_UNIXTIME(start_time,'%h:%i:%s') AS 'STARTTIME',
-								FROM_UNIXTIME(end_time,'%h:%i:%s') AS 'ENDTIME', Fullname
-								FROM `bookingcalendar` NATURAL JOIN customer 
-                                GROUP BY FROM_UNIXTIME(start_day,'%Y-%m-%d')
-								ORDER BY FROM_UNIXTIME(start_day,'%Y-%m-%d') DESC";
+                                $sql = "SELECT * FROM `appointments`";
                                 $result = mysqli_query($con,$sql);
                                 $x = 1;
                                 if(mysqli_num_rows($result) > 0 )
