@@ -362,13 +362,7 @@ td.calendar-day, td.calendar-day-np {
 					<td></td>
 					<td>&nbsp;</td>
 				</tr>
-				<tr>
-					<td>Phone:</td>
-					<td>
-			<input maxlength="20" name="phone" required="" type="text" /></td>
-					<td></td>
-					<td>&nbsp;</td>
-				</tr>
+				
 				<tr>
 					<td>Reservation time:</td>
 					<td>
