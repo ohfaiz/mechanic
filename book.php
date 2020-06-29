@@ -45,7 +45,7 @@ if(empty($_SESSION['captcha3'] ) ||
 		$end_day = intval(strtotime(htmlspecialchars($_POST["end_day"])));
 		$end_time = (60*60*intval(htmlspecialchars($_POST["end_hour"]))) + (60*intval(htmlspecialchars($_POST["end_minute"])));
 		
-		$phone = htmlspecialchars($_POST["phone"]);
+		
 		$f = ($_POST["ServiceName"]);
 		
 		$CustomerId = ($_POST["name"]);
@@ -59,7 +59,7 @@ if(empty($_SESSION['captcha3'] ) ||
 	*/
 		
 		// prevent double booking
-		$sql = "SELECT * FROM $tablename WHERE (start_day>=$start_day OR end_day>=$start_day) AND canceled=0";
+		$sql = "SELECT * FROM $tablename WHERE (start_day>=$start_day OR end_day>=$start_day) AND canceled=0 ";
 		$result = mysqli_query($conn, $sql);
 		if (mysqli_num_rows($result) > 0) {
 			// handle every row
@@ -73,9 +73,9 @@ if(empty($_SESSION['captcha3'] ) ||
 				}
 			}				
 		}
-				
-		$sql = "INSERT INTO $tablename (phone, start_day, end_day, start_time, end_time, canceled, CustomerId )
-			VALUES ('$phone', $start_day, $end_day, $start_time, $end_time, 0, $CustomerId)";
+			
+		$sql = "INSERT INTO $tablename (start_day, end_day, start_time, end_time, canceled, CustomerId )
+			VALUES ($start_day, $end_day, $start_time, $end_time, 0, $CustomerId)";
 			
 	
 		if (mysqli_query($conn, $sql)==TRUE) {
