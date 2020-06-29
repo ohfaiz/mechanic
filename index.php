@@ -76,7 +76,7 @@
                             </li>
                          
                             <li class="nav-item">
-                                 <a href="logout.php" class="btn btn-dark">
+                                 <a href="logout.php" class="btn">
                         <span class="fas fa-sign-out-alt" title="Logout"></span>
                     </a>
                             </li>
