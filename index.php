@@ -341,7 +341,7 @@
                           
                           <tbody>
                             <?php
-                                $sql = "SELECT * FROM `displayapp`";
+                                $sql = "select * from `displayappointment`";
                                 $result = mysqli_query($con,$sql);
                                 $x = 1;
                                 if(mysqli_num_rows($result) > 0 )
