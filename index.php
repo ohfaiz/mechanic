@@ -192,9 +192,7 @@
                                         <i class="fa fa-user fa-4x"></i>
                                     </div>
                                     <?php
-                                        $sqlc = "SELECT COUNT(CustomerId) AS 'TOTALCAT'
-										FROM customer
-										where YEAR(date_register) = YEAR(CURDATE())";
+                                        $sqlc = "SELECT * FROM `cust`";
                                         $resultc= mysqli_query($con,$sqlc);
 
                                         if(mysqli_num_rows($resultc) > 0 )
@@ -246,9 +244,7 @@
                                         <i class="fa fa-calendar fa-4x"></i>
                                     </div>
                                     <?php
-                                        $sqlapp = "SELECT COUNT(FROM_UNIXTIME(start_day,'%Y-%m-%d')) AS 'DATE'
-										FROM `bookingcalendar`
-										WHERE MONTH(FROM_UNIXTIME(start_day,'%Y-%m-%d')) = MONTH(CURDATE())";
+                                        $sqlapp = "SELECT * FROM `totalapp`";
 										
                                         $resultapp= mysqli_query($con,$sqlapp);
 
