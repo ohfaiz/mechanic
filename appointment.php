@@ -470,7 +470,8 @@ td.calendar-day, td.calendar-day-np {
 		</form>
 		</td>
 </table>
- <script type="text/javascript">
+
+	 <script type="text/javascript">
         $(document).ready(function () {
             $('#sidebarCollapse').on('click', function () {
                 $('#sidebar').toggleClass('active');
