@@ -59,7 +59,7 @@ if(empty($_SESSION['captcha3'] ) ||
 	*/
 		
 		// prevent double booking
-		$sql = "SELECT * FROM $tablename WHERE ServiceId='$f' AND (start_day>=$start_day OR end_day>=$start_day) AND canceled=0";
+		$sql = "SELECT * FROM $tablename WHERE (start_day>=$start_day OR end_day>=$start_day) AND canceled=0";
 		$result = mysqli_query($conn, $sql);
 		if (mysqli_num_rows($result) > 0) {
 			// handle every row
