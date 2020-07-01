@@ -7,13 +7,13 @@ if(isset($_GET["pdf"]) && isset($_GET["id"]))
  include('database_connection.php');
  $output = '';
  $statement = $connect->prepare("
-  SELECT * FROM tbl_order 
-  WHERE order_id = :order_id
+  SELECT * FROM invoice 
+  WHERE invoice_id = :invoice_id
   LIMIT 1
  ");
  $statement->execute(
   array(
-   ':order_id'       =>  $_GET["id"]
+   ':invoice_id'       =>  $_GET["id"]
   )
  );
  $result = $statement->fetchAll();
@@ -31,12 +31,12 @@ if(isset($_GET["pdf"]) && isset($_GET["id"]))
         <td width="65%">
          To,<br />
          <b>RECEIVER (BILL TO)</b><br />
-         Name : '.$row["order_receiver_name"].'<br /> 
-         Billing Address : '.$row["order_receiver_address"].'<br />
+         Name : '.$row["receiver_name"].'<br /> 
+         Billing Address : '.$row["receiver_address"].'<br />
         </td>
         <td width="35%">
          Reverse Charge<br />
-         Invoice No. : '.$row["order_no"].'<br />
+         Invoice No. : '.$row["invoice_no"].'<br />
          Invoice Date : '.$row["order_date"].'<br />
         </td>
        </tr>
@@ -68,12 +68,12 @@ if(isset($_GET["pdf"]) && isset($_GET["id"]))
         <th>Amt.</th>
        </tr>';
   $statement = $connect->prepare(
-   "SELECT * FROM tbl_order_item 
-   WHERE order_id = :order_id"
+   "SELECT * FROM invoice_item 
+   WHERE invoice_id = :invoice_id"
   );
   $statement->execute(
    array(
-    ':order_id'       =>  $_GET["id"]
+    ':invoice_id'       =>  $_GET["id"]
    )
   );
   $item_result = $statement->fetchAll();
@@ -85,40 +85,40 @@ if(isset($_GET["pdf"]) && isset($_GET["id"]))
    <tr>
     <td>'.$count.'</td>
     <td>'.$sub_row["item_name"].'</td>
-    <td>'.$sub_row["order_item_quantity"].'</td>
-    <td>'.$sub_row["order_item_price"].'</td>
-    <td>'.$sub_row["order_item_actual_amount"].'</td>
-    <td>'.$sub_row["order_item_tax1_rate"].'</td>
-    <td>'.$sub_row["order_item_tax1_amount"].'</td>
+    <td>'.$sub_row["item_quantity"].'</td>
+    <td>'.$sub_row["item_price"].'</td>
+    <td>'.$sub_row["item_actual_amount"].'</td>
+    <td>'.$sub_row["item_tax1_rate"].'</td>
+    <td>'.$sub_row["item_tax1_amount"].'</td>
     <td>'.$sub_row["order_item_tax2_rate"].'</td>
     <td>'.$sub_row["order_item_tax2_amount"].'</td>
     <td>'.$sub_row["order_item_tax3_rate"].'</td>
     <td>'.$sub_row["order_item_tax3_amount"].'</td>
-    <td>'.$sub_row["order_item_final_amount"].'</td>
+    <td>'.$sub_row["item_final_amount"].'</td>
    </tr>
    ';
   }
   $output .= '
   <tr>
    <td align="right" colspan="11"><b>Total</b></td>
-   <td align="right"><b>'.$row["order_total_after_tax"].'</b></td>
+   <td align="right"><b>'.$row["total_after_tax"].'</b></td>
   </tr>
   <tr>
    <td colspan="11"><b>Total Amt. Before Tax :</b></td>
-   <td align="right">'.$row["order_total_before_tax"].'</td>
+   <td align="right">'.$row["total_before_tax"].'</td>
   </tr>
   <tr>
    <td colspan="11">Add : Tax1 :</td>
-   <td align="right">'.$row["order_total_tax1"].'</td>
+   <td align="right">'.$row["total_tax1"].'</td>
   </tr>
  
   <tr>
    <td colspan="11"><b>Total Tax Amt.  :</b></td>
-   <td align="right">'.$row["order_total_tax"].'</td>
+   <td align="right">'.$row["total_tax"].'</td>
   </tr>
   <tr>
    <td colspan="11"><b>Total Amt. After Tax :</b></td>
-   <td align="right">'.$row["order_total_after_tax"].'</td>
+   <td align="right">'.$row["total_after_tax"].'</td>
   </tr>
   
   ';
@@ -130,7 +130,7 @@ if(isset($_GET["pdf"]) && isset($_GET["id"]))
   ';
  }
  $pdf = new Pdf();
- $file_name = 'Invoice-'.$row["order_no"].'.pdf';
+ $file_name = 'Invoice-'.$row["invoice_no"].'.pdf';
  $pdf->loadHtml($output);
  $pdf->render();
  $pdf->stream($file_name, array("Attachment" => false));
