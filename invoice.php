@@ -312,7 +312,7 @@ if(isset($_SESSION["email"])){
 				<li class="active"><a href="invoice.php"><i class="fa fa-sticky-note"></i> Invoice</a></li>
 				<li><a href="customer.php"><i class="fa fa-user"></i> Client List</a></li>
 				<li><a href="service.php"><i class="fa fa-wrench"></i> Services</a></li>
-				<li><a href="#"><i class="fa fa-book"></i> Profile</a></li>
+				
 				
             </ul>
         </nav>
