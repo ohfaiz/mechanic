@@ -9,7 +9,7 @@ if(isset($_SESSION["email"])){
   include('database_connection.php');
 
   $statement = $connect->prepare("
-    SELECT * FROM tbl_order 
+    SELECT * FROM invoice 
     NATURAL JOIN customer
     ORDER BY invoice_id DESC
   ");
@@ -28,7 +28,7 @@ if(isset($_SESSION["email"])){
     $total_tax = 0;
     $total_after_tax = 0;
     $statement = $connect->prepare("
-      INSERT INTO tbl_order 
+      INSERT INTO invoice 
         (invoice_no, order_date, CustomerId, receiver_name, total_before_tax, total_tax1, total_tax, total_after_tax, order_datetime,payment_status)
         VALUES (:invoice_no, :order_date, :CustomerId, :receiver_name, :total_before_tax, :total_tax1, :total_tax, :total_after_tax, :order_datetime,:status)
     ");
@@ -62,7 +62,7 @@ if(isset($_SESSION["email"])){
         $total_after_tax = $total_after_tax + floatval(trim($_POST["item_final_amount"][$count]));
 
         $statement = $connect->prepare("
-          INSERT INTO tbl_order_item 
+          INSERT INTO invoice_item 
           (invoice_id, item_name, item_quantity, item_price, item_actual_amount, item_tax1_rate, item_tax1_amount, item_final_amount)
           VALUES (:invoice_id, :item_name, :item_quantity, :item_price, :item_actual_amount, :item_tax1_rate, :item_tax1_amount, :item_final_amount)
         ");
@@ -84,7 +84,7 @@ if(isset($_SESSION["email"])){
       $total_tax = $total_tax1 ;
 
       $statement = $connect->prepare("
-        UPDATE tbl_order 
+        UPDATE invoice 
         SET total_before_tax = :total_before_tax, 
         total_tax1 = :total_tax1, 
         
@@ -118,7 +118,7 @@ if(isset($_SESSION["email"])){
       
       
       $statement = $connect->prepare("
-                DELETE FROM tbl_order_item WHERE invoice_id = :invoice_id
+                DELETE FROM invoice_item WHERE invoice_id = :invoice_id
             ");
             $statement->execute(
                 array(
@@ -133,7 +133,7 @@ if(isset($_SESSION["email"])){
        
         $total_after_tax = $total_after_tax + floatval(trim($_POST["item_final_amount"][$count]));
         $statement = $connect->prepare("
-          INSERT INTO tbl_order_item 
+          INSERT INTO invoice_item 
           (invoice_id, item_name, item_quantity, item_price, item_actual_amount, item_tax1_rate, item_tax1_amount, item_final_amount) 
           VALUES (:invoice_id, :item_name, :item_quantity, :item_price, :item_actual_amount, :item_tax1_rate, :item_tax1_amount, :item_final_amount)
         ");
@@ -155,7 +155,7 @@ if(isset($_SESSION["email"])){
       $total_tax = $total_tax1 ;
       
       $statement = $connect->prepare("
-        UPDATE tbl_order 
+        UPDATE invoice 
         SET invoice_no = :invoice_no, 
         order_date = :order_date, 
 		    payment_status = :status,
@@ -192,14 +192,14 @@ if(isset($_SESSION["email"])){
 
   if(isset($_GET["delete"]) && isset($_GET["id"]))
   {
-    $statement = $connect->prepare("DELETE FROM tbl_order WHERE invoice_id = :id");
+    $statement = $connect->prepare("DELETE FROM invoice WHERE invoice_id = :id");
     $statement->execute(
       array(
         ':id'       =>      $_GET["id"]
       )
     );
     $statement = $connect->prepare(
-      "DELETE FROM tbl_order_item WHERE invoice_id = :id");
+      "DELETE FROM invoice_item WHERE invoice_id = :id");
     $statement->execute(
       array(
         ':id'       =>      $_GET["id"]
@@ -597,7 +597,7 @@ if(isset($_SESSION["email"])){
       elseif(isset($_GET["update"]) && isset($_GET["id"]))
       {
         $statement = $connect->prepare("
-          SELECT * FROM tbl_order 
+          SELECT * FROM invoice 
           NATURAL JOIN customer
             WHERE invoice_id = :invoice_id
             LIMIT 1
@@ -672,7 +672,7 @@ if(isset($_SESSION["email"])){
                     </tr>
                     <?php
                     $statement = $connect->prepare("
-                      SELECT * FROM tbl_order_item 
+                      SELECT * FROM invoice_item 
                       WHERE invoice_id = :invoice_id
                     ");
                     $statement->execute(
