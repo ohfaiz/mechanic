@@ -8,7 +8,7 @@ if(isset($_GET["pdf"]) && isset($_GET["id"]))
  $output = '';
  $statement = $connect->prepare("
   SELECT * FROM invoice 
-  NATURAL JOIN customer 
+   
   WHERE invoice_id = :invoice_id
   LIMIT 1
  ");
