@@ -23,7 +23,7 @@ if(isset($_SESSION["email"])){
 	  
 	  
 	  
-	  $sql = "CALL updateservices('$Price','$ServiceName')"; 
+	  $sql = "CALL updateservices('$Price','$ServiceId')"; 
 	  $execute = mysqli_query ($con,$sql) or die (mysqli_error ($con));
 	  
       if(isset($update)){
