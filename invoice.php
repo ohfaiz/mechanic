@@ -63,15 +63,15 @@ if(isset($_SESSION["email"])){
 
         $statement = $connect->prepare("
           INSERT INTO tbl_order_item 
-          (invoice_id, item_name, order_item_quantity, item_price, item_actual_amount, item_tax1_rate, item_tax1_amount, item_final_amount)
-          VALUES (:invoice_id, :item_name, :order_item_quantity, :item_price, :item_actual_amount, :item_tax1_rate, :item_tax1_amount, :item_final_amount)
+          (invoice_id, item_name, item_quantity, item_price, item_actual_amount, item_tax1_rate, item_tax1_amount, item_final_amount)
+          VALUES (:invoice_id, :item_name, :item_quantity, :item_price, :item_actual_amount, :item_tax1_rate, :item_tax1_amount, :item_final_amount)
         ");
 
         $statement->execute(
           array(
             ':invoice_id'               =>  $invoice_id,
             ':item_name'              =>  trim($_POST["item_name"][$count]),
-            ':order_item_quantity'          =>  trim($_POST["order_item_quantity"][$count]),
+            ':item_quantity'          =>  trim($_POST["item_quantity"][$count]),
             ':item_price'           =>  trim($_POST["item_price"][$count]),
             ':item_actual_amount'       =>  trim($_POST["item_actual_amount"][$count]),
             ':item_tax1_rate'         =>  trim($_POST["item_tax1_rate"][$count]),
@@ -134,14 +134,14 @@ if(isset($_SESSION["email"])){
         $total_after_tax = $total_after_tax + floatval(trim($_POST["item_final_amount"][$count]));
         $statement = $connect->prepare("
           INSERT INTO tbl_order_item 
-          (invoice_id, item_name, order_item_quantity, item_price, item_actual_amount, item_tax1_rate, item_tax1_amount, item_final_amount) 
-          VALUES (:invoice_id, :item_name, :order_item_quantity, :item_price, :item_actual_amount, :item_tax1_rate, :item_tax1_amount, :item_final_amount)
+          (invoice_id, item_name, item_quantity, item_price, item_actual_amount, item_tax1_rate, item_tax1_amount, item_final_amount) 
+          VALUES (:invoice_id, :item_name, :item_quantity, :item_price, :item_actual_amount, :item_tax1_rate, :item_tax1_amount, :item_final_amount)
         ");
         $statement->execute(
           array(
             ':invoice_id'                 =>  $invoice_id,
             ':item_name'                =>  trim($_POST["item_name"][$count]),
-            ':order_item_quantity'          =>  trim($_POST["order_item_quantity"][$count]),
+            ':item_quantity'          =>  trim($_POST["item_quantity"][$count]),
             ':item_price'            =>  trim($_POST["item_price"][$count]),
             ':item_actual_amount'     =>  trim($_POST["item_actual_amount"][$count]),
             ':item_tax1_rate'         =>  trim($_POST["item_tax1_rate"][$count]),
@@ -320,16 +320,35 @@ if(isset($_SESSION["email"])){
         <!-- Page Content  -->
         <div id="content">
 
-            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          	<nav class="navbar navbar-expand-lg navbar-light bg-light">
                 <div class="container-fluid">
 
-                    <button type="button" id="sidebarCollapse" class="btn btnToggle">
+                    <button type="button" id="sidebarCollapse" class="btn btn-info">
                         <i class="fas fa-align-left"></i>
+                        
                     </button>
-                    <a href="logout.php" class="btn btn-warning">
+                    <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <i class="fas fa-align-justify"></i>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="nav navbar-nav ml-auto">
+                            <li class="nav-item active">
+                                <a href="change.php" class="btn">
+                        <span class="fa fa-unlock-alt" title="Change Password"></span>
+                            </li>
+                            <li class="nav-item">
+                                <a href="question.php" class="btn">
+                        <span class="fa fa-book" title="Security Question"></span>
+                            </li>
+                         
+                            <li class="nav-item">
+                                 <a href="logout.php" class="btn btn-dark">
                         <span class="fas fa-sign-out-alt" title="Logout"></span>
                     </a>
-
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </nav>
             
@@ -408,7 +427,7 @@ if(isset($_SESSION["email"])){
                     <tr>
                       <td><span id="sr_no">1</span></td>
                       <td><input type="text" name="item_name[]" id="item_name1" class="form-control input-sm" /></td>
-                      <td><input type="text" name="order_item_quantity[]" id="order_item_quantity1" data-srno="1" class="form-control input-sm order_item_quantity" /></td>
+                      <td><input type="text" name="item_quantity[]" id="item_quantity1" data-srno="1" class="form-control input-sm item_quantity" /></td>
                       <td><input type="text" name="item_price[]" id="item_price1" data-srno="1" class="form-control input-sm number_only item_price" /></td>
                       <td><input type="text" name="item_actual_amount[]" id="item_actual_amount1" data-srno="1" class="form-control input-sm item_actual_amount" readonly /></td>
                       <td><input type="text" name="item_tax1_rate[]" id="item_tax1_rate1" data-srno="1" class="form-control input-sm number_only item_tax1_rate" /></td>
@@ -453,7 +472,7 @@ if(isset($_SESSION["email"])){
           
           html_code += '<td><input type="text" name="item_name[]" id="item_name'+count+'" class="form-control input-sm" /></td>';
           
-          html_code += '<td><input type="text" name="order_item_quantity[]" id="order_item_quantity'+count+'" data-srno="'+count+'" class="form-control input-sm number_only order_item_quantity" /></td>';
+          html_code += '<td><input type="text" name="item_quantity[]" id="item_quantity'+count+'" data-srno="'+count+'" class="form-control input-sm number_only item_quantity" /></td>';
           html_code += '<td><input type="text" name="item_price[]" id="item_price'+count+'" data-srno="'+count+'" class="form-control input-sm number_only item_price" /></td>';
           html_code += '<td><input type="text" name="item_actual_amount[]" id="item_actual_amount'+count+'" data-srno="'+count+'" class="form-control input-sm item_actual_amount" readonly /></td>';
           
@@ -489,7 +508,7 @@ if(isset($_SESSION["email"])){
             var tax1_amount = 0;
             
             var item_total = 0;
-            quantity = $('#order_item_quantity'+j).val();
+            quantity = $('#item_quantity'+j).val();
             if(quantity > 0)
             {
               price = $('#item_price'+j).val();
@@ -551,10 +570,10 @@ if(isset($_SESSION["email"])){
               return false;
             }
 
-            if($.trim($('#order_item_quantity'+no).val()).length == 0)
+            if($.trim($('#item_quantity'+no).val()).length == 0)
             {
               alert("Please Enter Quantity");
-              $('#order_item_quantity'+no).focus();
+              $('#item_quantity'+no).focus();
               return false;
             }
 
@@ -670,7 +689,7 @@ if(isset($_SESSION["email"])){
                     <tr>
                       <td><span id="sr_no"><?php echo $m; ?></span></td>
                       <td><input type="text" name="item_name[]" id="item_name<?php echo $m; ?>" class="form-control input-sm" value="<?php echo $sub_row["item_name"]; ?>" /></td>
-                      <td><input type="text" name="order_item_quantity[]" id="order_item_quantity<?php echo $m; ?>" data-srno="<?php echo $m; ?>" class="form-control input-sm order_item_quantity" value = "<?php echo $sub_row["order_item_quantity"]; ?>"/></td>
+                      <td><input type="text" name="item_quantity[]" id="item_quantity<?php echo $m; ?>" data-srno="<?php echo $m; ?>" class="form-control input-sm item_quantity" value = "<?php echo $sub_row["item_quantity"]; ?>"/></td>
                       <td><input type="text" name="item_price[]" id="item_price<?php echo $m; ?>" data-srno="<?php echo $m; ?>" class="form-control input-sm number_only item_price" value="<?php echo $sub_row["item_price"]; ?>" /></td>
                       <td><input type="text" name="item_actual_amount[]" id="item_actual_amount<?php echo $m; ?>" data-srno="<?php echo $m; ?>" class="form-control input-sm item_actual_amount" value="<?php echo $sub_row["item_actual_amount"];?>" readonly /></td>
                       <td><input type="text" name="item_tax1_rate[]" id="item_tax1_rate<?php echo $m; ?>" data-srno="<?php echo $m; ?>" class="form-control input-sm number_only item_tax1_rate" value="<?php echo $sub_row["item_tax1_rate"]; ?>" /></td>
@@ -716,7 +735,7 @@ if(isset($_SESSION["email"])){
           
           html_code += '<td><input type="text" name="item_name[]" id="item_name'+count+'" class="form-control input-sm" /></td>';
           
-          html_code += '<td><input type="text" name="order_item_quantity[]" id="order_item_quantity'+count+'" data-srno="'+count+'" class="form-control input-sm number_only order_item_quantity" /></td>';
+          html_code += '<td><input type="text" name="item_quantity[]" id="item_quantity'+count+'" data-srno="'+count+'" class="form-control input-sm number_only item_quantity" /></td>';
           html_code += '<td><input type="text" name="item_price[]" id="item_price'+count+'" data-srno="'+count+'" class="form-control input-sm number_only item_price" /></td>';
           html_code += '<td><input type="text" name="item_actual_amount[]" id="item_actual_amount'+count+'" data-srno="'+count+'" class="form-control input-sm item_actual_amount" readonly /></td>';
           
@@ -752,7 +771,7 @@ if(isset($_SESSION["email"])){
             var tax1_amount = 0;
            
             var item_total = 0;
-            quantity = $('#order_item_quantity'+j).val();
+            quantity = $('#item_quantity'+j).val();
             if(quantity > 0)
             {
               price = $('#item_price'+j).val();
@@ -814,10 +833,10 @@ if(isset($_SESSION["email"])){
               return false;
             }
 
-            if($.trim($('#order_item_quantity'+no).val()).length == 0)
+            if($.trim($('#item_quantity'+no).val()).length == 0)
             {
               alert("Please Enter Quantity");
-              $('#order_item_quantity'+no).focus();
+              $('#item_quantity'+no).focus();
               return false;
             }
 
