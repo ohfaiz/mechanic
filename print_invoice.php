@@ -32,7 +32,7 @@ if(isset($_GET["pdf"]) && isset($_GET["id"]))
         <td width="65%">
          To,<br />
          <b>RECEIVER (BILL TO)</b><br />
-         Name : '.$row["receiver_name"].'<br /> 
+         Name : '.$row["Fullname"].'<br /> 
          Billing Address : '.$row["receiver_address"].'<br />
         </td>
         <td width="35%">
