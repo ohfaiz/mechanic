@@ -11,7 +11,7 @@ if(isset($_SESSION["email"])){
   $statement = $connect->prepare("
     SELECT * FROM tbl_order 
     NATURAL JOIN customer
-    ORDER BY order_id DESC
+    ORDER BY invoice_id DESC
   ");
 
   $statement->execute();
@@ -22,84 +22,84 @@ if(isset($_SESSION["email"])){
 
   if(isset($_POST["create_invoice"]))
   { 
-    $order_total_before_tax = 0;
-    $order_total_tax1 = 0;
+    $total_before_tax = 0;
+    $total_tax1 = 0;
    
-    $order_total_tax = 0;
-    $order_total_after_tax = 0;
+    $total_tax = 0;
+    $total_after_tax = 0;
     $statement = $connect->prepare("
       INSERT INTO tbl_order 
-        (order_no, order_date, CustomerId, order_receiver_address, order_total_before_tax, order_total_tax1, order_total_tax, order_total_after_tax, order_datetime,payment_status)
-        VALUES (:order_no, :order_date, :CustomerId, :order_receiver_address, :order_total_before_tax, :order_total_tax1, :order_total_tax, :order_total_after_tax, :order_datetime,:status)
+        (invoice_no, order_date, CustomerId, receiver_address, total_before_tax, total_tax1, total_tax, total_after_tax, order_datetime,payment_status)
+        VALUES (:invoice_no, :order_date, :CustomerId, :receiver_address, :total_before_tax, :total_tax1, :total_tax, :total_after_tax, :order_datetime,:status)
     ");
     $statement->execute(
       array(
-          ':order_no'               =>  trim($_POST["order_no"]),
+          ':invoice_no'               =>  trim($_POST["invoice_no"]),
           ':order_date'             =>  trim($_POST["order_date"]),
           ':status'                 =>  trim($_POST["status"]),
           ':CustomerId'          =>  trim($_POST["CustomerId"]),
-          ':order_receiver_address'       =>  trim($_POST["order_receiver_address"]),
-          ':order_total_before_tax'       =>  $order_total_before_tax,
-          ':order_total_tax1'           =>  $order_total_tax1,
+          ':receiver_address'       =>  trim($_POST["receiver_address"]),
+          ':total_before_tax'       =>  $total_before_tax,
+          ':total_tax1'           =>  $total_tax1,
           
-          ':order_total_tax'            =>  $order_total_tax,
-          ':order_total_after_tax'        =>  $order_total_after_tax,
+          ':total_tax'            =>  $total_tax,
+          ':total_after_tax'        =>  $total_after_tax,
           ':order_datetime'           =>  date("Y-m-d")
       )
     );
 
       $statement = $connect->query("SELECT LAST_INSERT_ID()");
-      $order_id = $statement->fetchColumn();
+      $invoice_id = $statement->fetchColumn();
 
       for($count=0; $count<$_POST["total_item"]; $count++)
       {
-        $order_total_before_tax = $order_total_before_tax + floatval(trim($_POST["order_item_actual_amount"][$count]));
+        $total_before_tax = $total_before_tax + floatval(trim($_POST["item_actual_amount"][$count]));
 
-        $order_total_tax1 = $order_total_tax1 + floatval(trim($_POST["order_item_tax1_amount"][$count]));
+        $total_tax1 = $total_tax1 + floatval(trim($_POST["item_tax1_amount"][$count]));
 
        
 
-        $order_total_after_tax = $order_total_after_tax + floatval(trim($_POST["order_item_final_amount"][$count]));
+        $total_after_tax = $total_after_tax + floatval(trim($_POST["item_final_amount"][$count]));
 
         $statement = $connect->prepare("
           INSERT INTO tbl_order_item 
-          (order_id, item_name, order_item_quantity, order_item_price, order_item_actual_amount, order_item_tax1_rate, order_item_tax1_amount, order_item_final_amount)
-          VALUES (:order_id, :item_name, :order_item_quantity, :order_item_price, :order_item_actual_amount, :order_item_tax1_rate, :order_item_tax1_amount, :order_item_final_amount)
+          (invoice_id, item_name, item_quantity, item_price, item_actual_amount, item_tax1_rate, item_tax1_amount, item_final_amount)
+          VALUES (:invoice_id, :item_name, :item_quantity, :item_price, :item_actual_amount, :item_tax1_rate, :item_tax1_amount, :item_final_amount)
         ");
 
         $statement->execute(
           array(
-            ':order_id'               =>  $order_id,
+            ':invoice_id'               =>  $invoice_id,
             ':item_name'              =>  trim($_POST["item_name"][$count]),
-            ':order_item_quantity'          =>  trim($_POST["order_item_quantity"][$count]),
-            ':order_item_price'           =>  trim($_POST["order_item_price"][$count]),
-            ':order_item_actual_amount'       =>  trim($_POST["order_item_actual_amount"][$count]),
-            ':order_item_tax1_rate'         =>  trim($_POST["order_item_tax1_rate"][$count]),
-            ':order_item_tax1_amount'       =>  trim($_POST["order_item_tax1_amount"][$count]),
+            ':item_quantity'          =>  trim($_POST["item_quantity"][$count]),
+            ':item_price'           =>  trim($_POST["item_price"][$count]),
+            ':item_actual_amount'       =>  trim($_POST["item_actual_amount"][$count]),
+            ':item_tax1_rate'         =>  trim($_POST["item_tax1_rate"][$count]),
+            ':item_tax1_amount'       =>  trim($_POST["item_tax1_amount"][$count]),
            
-            ':order_item_final_amount'        =>  trim($_POST["order_item_final_amount"][$count])
+            ':item_final_amount'        =>  trim($_POST["item_final_amount"][$count])
           )
         );
       }
-      $order_total_tax = $order_total_tax1 ;
+      $total_tax = $total_tax1 ;
 
       $statement = $connect->prepare("
         UPDATE tbl_order 
-        SET order_total_before_tax = :order_total_before_tax, 
-        order_total_tax1 = :order_total_tax1, 
+        SET total_before_tax = :total_before_tax, 
+        total_tax1 = :total_tax1, 
         
-        order_total_tax = :order_total_tax, 
-        order_total_after_tax = :order_total_after_tax 
-        WHERE order_id = :order_id 
+        total_tax = :total_tax, 
+        total_after_tax = :total_after_tax 
+        WHERE invoice_id = :invoice_id 
       ");
       $statement->execute(
         array(
-          ':order_total_before_tax'     =>  $order_total_before_tax,
-          ':order_total_tax1'         =>  $order_total_tax1,
+          ':total_before_tax'     =>  $total_before_tax,
+          ':total_tax1'         =>  $total_tax1,
           
-          ':order_total_tax'          =>  $order_total_tax,
-          ':order_total_after_tax'      =>  $order_total_after_tax,
-          ':order_id'             =>  $order_id
+          ':total_tax'          =>  $total_tax,
+          ':total_after_tax'      =>  $total_after_tax,
+          ':invoice_id'             =>  $invoice_id
         )
       );
       header("location:invoice.php");
@@ -107,81 +107,81 @@ if(isset($_SESSION["email"])){
 
   if(isset($_POST["update_invoice"]))
   {
-    $order_total_before_tax = 0;
-      $order_total_tax1 = 0;
+    $total_before_tax = 0;
+      $total_tax1 = 0;
       
-      $order_total_tax = 0;
-      $order_total_after_tax = 0;
+      $total_tax = 0;
+      $total_after_tax = 0;
       
-      $order_id = $_POST["order_id"];
+      $invoice_id = $_POST["invoice_id"];
       
       
       
       $statement = $connect->prepare("
-                DELETE FROM tbl_order_item WHERE order_id = :order_id
+                DELETE FROM tbl_order_item WHERE invoice_id = :invoice_id
             ");
             $statement->execute(
                 array(
-                    ':order_id'       =>      $order_id
+                    ':invoice_id'       =>      $invoice_id
                 )
             );
       
       for($count=0; $count<$_POST["total_item"]; $count++)
       {
-        $order_total_before_tax = $order_total_before_tax + floatval(trim($_POST["order_item_actual_amount"][$count]));
-        $order_total_tax1 = $order_total_tax1 + floatval(trim($_POST["order_item_tax1_amount"][$count]));
+        $total_before_tax = $total_before_tax + floatval(trim($_POST["item_actual_amount"][$count]));
+        $total_tax1 = $total_tax1 + floatval(trim($_POST["item_tax1_amount"][$count]));
        
-        $order_total_after_tax = $order_total_after_tax + floatval(trim($_POST["order_item_final_amount"][$count]));
+        $total_after_tax = $total_after_tax + floatval(trim($_POST["item_final_amount"][$count]));
         $statement = $connect->prepare("
           INSERT INTO tbl_order_item 
-          (order_id, item_name, order_item_quantity, order_item_price, order_item_actual_amount, order_item_tax1_rate, order_item_tax1_amount, order_item_final_amount) 
-          VALUES (:order_id, :item_name, :order_item_quantity, :order_item_price, :order_item_actual_amount, :order_item_tax1_rate, :order_item_tax1_amount, :order_item_final_amount)
+          (invoice_id, item_name, item_quantity, item_price, item_actual_amount, item_tax1_rate, item_tax1_amount, item_final_amount) 
+          VALUES (:invoice_id, :item_name, :item_quantity, :item_price, :item_actual_amount, :item_tax1_rate, :item_tax1_amount, :item_final_amount)
         ");
         $statement->execute(
           array(
-            ':order_id'                 =>  $order_id,
+            ':invoice_id'                 =>  $invoice_id,
             ':item_name'                =>  trim($_POST["item_name"][$count]),
-            ':order_item_quantity'          =>  trim($_POST["order_item_quantity"][$count]),
-            ':order_item_price'            =>  trim($_POST["order_item_price"][$count]),
-            ':order_item_actual_amount'     =>  trim($_POST["order_item_actual_amount"][$count]),
-            ':order_item_tax1_rate'         =>  trim($_POST["order_item_tax1_rate"][$count]),
-            ':order_item_tax1_amount'       =>  trim($_POST["order_item_tax1_amount"][$count]),
+            ':item_quantity'          =>  trim($_POST["item_quantity"][$count]),
+            ':item_price'            =>  trim($_POST["item_price"][$count]),
+            ':item_actual_amount'     =>  trim($_POST["item_actual_amount"][$count]),
+            ':item_tax1_rate'         =>  trim($_POST["item_tax1_rate"][$count]),
+            ':item_tax1_amount'       =>  trim($_POST["item_tax1_amount"][$count]),
             
-            ':order_item_final_amount'      =>  trim($_POST["order_item_final_amount"][$count])
+            ':item_final_amount'      =>  trim($_POST["item_final_amount"][$count])
           )
         );
         $result = $statement->fetchAll();
       }
-      $order_total_tax = $order_total_tax1 ;
+      $total_tax = $total_tax1 ;
       
       $statement = $connect->prepare("
         UPDATE tbl_order 
-        SET order_no = :order_no, 
+        SET invoice_no = :invoice_no, 
         order_date = :order_date, 
 		    payment_status = :status,
         CustomerId = :CustomerId, 
-        order_receiver_address = :order_receiver_address, 
-        order_total_before_tax = :order_total_before_tax, 
-        order_total_tax1 = :order_total_tax1, 
+        receiver_address = :receiver_address, 
+        total_before_tax = :total_before_tax, 
+        total_tax1 = :total_tax1, 
         
-        order_total_tax = :order_total_tax, 
-        order_total_after_tax = :order_total_after_tax 
-        WHERE order_id = :order_id 
+        total_tax = :total_tax, 
+        total_after_tax = :total_after_tax 
+        WHERE invoice_id = :invoice_id 
       ");
       
       $statement->execute(
         array(
-          ':order_no'               =>  trim($_POST["order_no"]),
+          ':invoice_no'               =>  trim($_POST["invoice_no"]),
           ':order_date'             =>  trim($_POST["order_date"]),
 		      ':status'                 =>  trim($_POST["status"]),
           ':CustomerId'        =>  trim($_POST["CustomerId"]),
-          ':order_receiver_address'     =>  trim($_POST["order_receiver_address"]),
-          ':order_total_before_tax'     =>  $order_total_before_tax,
-          ':order_total_tax1'          =>  $order_total_tax1,
+          ':receiver_address'     =>  trim($_POST["receiver_address"]),
+          ':total_before_tax'     =>  $total_before_tax,
+          ':total_tax1'          =>  $total_tax1,
           
-          ':order_total_tax'           =>  $order_total_tax,
-          ':order_total_after_tax'      =>  $order_total_after_tax,
-          ':order_id'               =>  $order_id
+          ':total_tax'           =>  $total_tax,
+          ':total_after_tax'      =>  $total_after_tax,
+          ':invoice_id'               =>  $invoice_id
         )
       );
       
@@ -192,14 +192,14 @@ if(isset($_SESSION["email"])){
 
   if(isset($_GET["delete"]) && isset($_GET["id"]))
   {
-    $statement = $connect->prepare("DELETE FROM tbl_order WHERE order_id = :id");
+    $statement = $connect->prepare("DELETE FROM tbl_order WHERE invoice_id = :id");
     $statement->execute(
       array(
         ':id'       =>      $_GET["id"]
       )
     );
     $statement = $connect->prepare(
-      "DELETE FROM tbl_order_item WHERE order_id = :id");
+      "DELETE FROM tbl_order_item WHERE invoice_id = :id");
     $statement->execute(
       array(
         ':id'       =>      $_GET["id"]
@@ -286,7 +286,7 @@ if(isset($_SESSION["email"])){
       box-sizing:border-box;
       }
     </style>
-   <!--  <script src="js/bootstrap-datepicker1.js"></script>
+    <script src="js/bootstrap-datepicker1.js"></script>
 	<script src = "https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <script>
       $(document).ready(function(){
@@ -295,7 +295,7 @@ if(isset($_SESSION["email"])){
           autoclose: true
         });
       });
-    </script> -->
+    </script>
   
     
 	
@@ -312,7 +312,7 @@ if(isset($_SESSION["email"])){
 				<li class="active"><a href="invoice.php"><i class="fa fa-sticky-note"></i> Invoice</a></li>
 				<li><a href="customer.php"><i class="fa fa-user"></i> Client List</a></li>
 				<li><a href="service.php"><i class="fa fa-wrench"></i> Services</a></li>
-				
+				<li><a href="#"><i class="fa fa-book"></i> Profile</a></li>
 				
             </ul>
         </nav>
@@ -323,32 +323,13 @@ if(isset($_SESSION["email"])){
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 <div class="container-fluid">
 
-                    <button type="button" id="sidebarCollapse" class="btn btn-info">
+                    <button type="button" id="sidebarCollapse" class="btn btnToggle">
                         <i class="fas fa-align-left"></i>
-                        
                     </button>
-                    <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <i class="fas fa-align-justify"></i>
-                    </button>
-
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="nav navbar-nav ml-auto">
-                            <li class="nav-item active">
-                                <a href="change.php" class="btn">
-                        <span class="fa fa-unlock-alt" title="Change Password"></span>
-                            </li>
-                            <li class="nav-item">
-                                <a href="question.php" class="btn">
-                        <span class="fa fa-book" title="Security Question"></span>
-                            </li>
-                         
-                            <li class="nav-item">
-                                 <a href="logout.php" class="btn">
+                    <a href="logout.php" class="btn btn-warning">
                         <span class="fas fa-sign-out-alt" title="Logout"></span>
                     </a>
-                            </li>
-                        </ul>
-                    </div>
+
                 </div>
             </nav>
             
@@ -381,10 +362,6 @@ if(isset($_SESSION["email"])){
               $display = "SELECT CustomerId, Fullname FROM `customer`";
               $result = mysqli_query ($con, $display) or die (mysqli_error($con));
 
-              date_default_timezone_set('Asia/Kuala_Lumpur');
-              $time = date("H:i");
-              $date = date('Y-m-d');
-
               while($row = mysqli_fetch_assoc($result)){
                 $name .="<option value = '{$row['CustomerId']}' > {$row['Fullname']} </option>";
               } 
@@ -394,12 +371,12 @@ if(isset($_SESSION["email"])){
               <?php echo $name?>
 						</select>
 						
-                        <textarea name="order_receiver_address" id="order_receiver_address" class="form-control" placeholder="Enter Billing Address"></textarea>
+                        <textarea name="receiver_address" id="receiver_address" class="form-control" placeholder="Enter Billing Address"></textarea>
                     </div>
                     <div class="col-md-4">
                       Reverse Charge<br />
-                      <input type="text" name="order_no" id="order_no" class="form-control input-sm" value="<?php echo uniqid();?>" readonly />
-                      <input type="text" name="order_date" id="order_date" value="<?php echo $date;?>" class="form-control input-sm" readonly/>
+                      <input type="text" name="invoice_no" id="invoice_no" class="form-control input-sm" value="<?php echo uniqid();?>" readonly />
+                      <input type="text" name="order_date" id="order_date" class="form-control input-sm" readonly placeholder="Select Invoice Date" />
                       <input type="text" name="status" id="status" class="form-control input-sm" readonly value="Unpaid" />
                     </div>
                   </div>
@@ -427,13 +404,13 @@ if(isset($_SESSION["email"])){
                     <tr>
                       <td><span id="sr_no">1</span></td>
                       <td><input type="text" name="item_name[]" id="item_name1" class="form-control input-sm" /></td>
-                      <td><input type="text" name="order_item_quantity[]" id="order_item_quantity1" data-srno="1" class="form-control input-sm order_item_quantity" /></td>
-                      <td><input type="text" name="order_item_price[]" id="order_item_price1" data-srno="1" class="form-control input-sm number_only order_item_price" /></td>
-                      <td><input type="text" name="order_item_actual_amount[]" id="order_item_actual_amount1" data-srno="1" class="form-control input-sm order_item_actual_amount" readonly /></td>
-                      <td><input type="text" name="order_item_tax1_rate[]" id="order_item_tax1_rate1" data-srno="1" class="form-control input-sm number_only order_item_tax1_rate" /></td>
-                      <td><input type="text" name="order_item_tax1_amount[]" id="order_item_tax1_amount1" data-srno="1" readonly class="form-control input-sm order_item_tax1_amount" /></td>
+                      <td><input type="text" name="item_quantity[]" id="item_quantity1" data-srno="1" class="form-control input-sm item_quantity" /></td>
+                      <td><input type="text" name="item_price[]" id="item_price1" data-srno="1" class="form-control input-sm number_only item_price" /></td>
+                      <td><input type="text" name="item_actual_amount[]" id="item_actual_amount1" data-srno="1" class="form-control input-sm item_actual_amount" readonly /></td>
+                      <td><input type="text" name="item_tax1_rate[]" id="item_tax1_rate1" data-srno="1" class="form-control input-sm number_only item_tax1_rate" /></td>
+                      <td><input type="text" name="item_tax1_amount[]" id="item_tax1_amount1" data-srno="1" readonly class="form-control input-sm item_tax1_amount" /></td>
                       
-                      <td><input type="text" name="order_item_final_amount[]" id="order_item_final_amount1" data-srno="1" readonly class="form-control input-sm order_item_final_amount" /></td>
+                      <td><input type="text" name="item_final_amount[]" id="item_final_amount1" data-srno="1" readonly class="form-control input-sm item_final_amount" /></td>
                       <td></td>
                     </tr>
                   </table>
@@ -472,14 +449,14 @@ if(isset($_SESSION["email"])){
           
           html_code += '<td><input type="text" name="item_name[]" id="item_name'+count+'" class="form-control input-sm" /></td>';
           
-          html_code += '<td><input type="text" name="order_item_quantity[]" id="order_item_quantity'+count+'" data-srno="'+count+'" class="form-control input-sm number_only order_item_quantity" /></td>';
-          html_code += '<td><input type="text" name="order_item_price[]" id="order_item_price'+count+'" data-srno="'+count+'" class="form-control input-sm number_only order_item_price" /></td>';
-          html_code += '<td><input type="text" name="order_item_actual_amount[]" id="order_item_actual_amount'+count+'" data-srno="'+count+'" class="form-control input-sm order_item_actual_amount" readonly /></td>';
+          html_code += '<td><input type="text" name="item_quantity[]" id="item_quantity'+count+'" data-srno="'+count+'" class="form-control input-sm number_only item_quantity" /></td>';
+          html_code += '<td><input type="text" name="item_price[]" id="item_price'+count+'" data-srno="'+count+'" class="form-control input-sm number_only item_price" /></td>';
+          html_code += '<td><input type="text" name="item_actual_amount[]" id="item_actual_amount'+count+'" data-srno="'+count+'" class="form-control input-sm item_actual_amount" readonly /></td>';
           
-          html_code += '<td><input type="text" name="order_item_tax1_rate[]" id="order_item_tax1_rate'+count+'" data-srno="'+count+'" class="form-control input-sm number_only order_item_tax1_rate" /></td>';
-          html_code += '<td><input type="text" name="order_item_tax1_amount[]" id="order_item_tax1_amount'+count+'" data-srno="'+count+'" readonly class="form-control input-sm order_item_tax1_amount" /></td>';
+          html_code += '<td><input type="text" name="item_tax1_rate[]" id="item_tax1_rate'+count+'" data-srno="'+count+'" class="form-control input-sm number_only item_tax1_rate" /></td>';
+          html_code += '<td><input type="text" name="item_tax1_amount[]" id="item_tax1_amount'+count+'" data-srno="'+count+'" readonly class="form-control input-sm item_tax1_amount" /></td>';
           
-          html_code += '<td><input type="text" name="order_item_final_amount[]" id="order_item_final_amount'+count+'" data-srno="'+count+'" readonly class="form-control input-sm order_item_final_amount" /></td>';
+          html_code += '<td><input type="text" name="item_final_amount[]" id="item_final_amount'+count+'" data-srno="'+count+'" readonly class="form-control input-sm item_final_amount" /></td>';
           html_code += '<td><button type="button" name="remove_row" id="'+count+'" class="btn btn-danger btn-xs remove_row">X</button></td>';
           html_code += '</tr>';
           $('#invoice-item-table').append(html_code);
@@ -487,7 +464,7 @@ if(isset($_SESSION["email"])){
         
         $(document).on('click', '.remove_row', function(){
           var row_id = $(this).attr("id");
-          var total_item_amount = $('#order_item_final_amount'+row_id).val();
+          var total_item_amount = $('#item_final_amount'+row_id).val();
           var final_amount = $('#final_total_amt').text();
           var result_amount = parseFloat(final_amount) - parseFloat(total_item_amount);
           $('#final_total_amt').text(result_amount);
@@ -508,35 +485,35 @@ if(isset($_SESSION["email"])){
             var tax1_amount = 0;
             
             var item_total = 0;
-            quantity = $('#order_item_quantity'+j).val();
+            quantity = $('#item_quantity'+j).val();
             if(quantity > 0)
             {
-              price = $('#order_item_price'+j).val();
+              price = $('#item_price'+j).val();
               if(price > 0)
               {
                 actual_amount = parseFloat(quantity) * parseFloat(price);
-                $('#order_item_actual_amount'+j).val(actual_amount);
-                tax1_rate = $('#order_item_tax1_rate'+j).val();
+                $('#item_actual_amount'+j).val(actual_amount);
+                tax1_rate = $('#item_tax1_rate'+j).val();
                 if(tax1_rate > 0)
                 {
                   tax1_amount = parseFloat(actual_amount)*parseFloat(tax1_rate)/100;
-                  $('#order_item_tax1_amount'+j).val(tax1_amount);
+                  $('#item_tax1_amount'+j).val(tax1_amount);
                 }
                
                 item_total = parseFloat(actual_amount) + parseFloat(tax1_amount);
                 final_item_total = parseFloat(final_item_total) + parseFloat(item_total);
-                $('#order_item_final_amount'+j).val(item_total);
+                $('#item_final_amount'+j).val(item_total);
               }
             }
           }
           $('#final_total_amt').text(final_item_total);
         }
 
-        $(document).on('blur', '.order_item_price', function(){
+        $(document).on('blur', '.item_price', function(){
           cal_final_total(count);
         });
 
-        $(document).on('blur', '.order_item_tax1_rate', function(){
+        $(document).on('blur', '.item_tax1_rate', function(){
           cal_final_total(count);
         });
 
@@ -549,7 +526,7 @@ if(isset($_SESSION["email"])){
             return false;
           }
 
-          if($.trim($('#order_no').val()).length == 0)
+          if($.trim($('#invoice_no').val()).length == 0)
           {
             alert("Please Enter Invoice Number");
             return false;
@@ -570,17 +547,17 @@ if(isset($_SESSION["email"])){
               return false;
             }
 
-            if($.trim($('#order_item_quantity'+no).val()).length == 0)
+            if($.trim($('#item_quantity'+no).val()).length == 0)
             {
               alert("Please Enter Quantity");
-              $('#order_item_quantity'+no).focus();
+              $('#item_quantity'+no).focus();
               return false;
             }
 
-            if($.trim($('#order_item_price'+no).val()).length == 0)
+            if($.trim($('#item_price'+no).val()).length == 0)
             {
               alert("Please Enter Price");
-              $('#order_item_price'+no).focus();
+              $('#item_price'+no).focus();
               return false;
             }
 
@@ -599,12 +576,12 @@ if(isset($_SESSION["email"])){
         $statement = $connect->prepare("
           SELECT * FROM tbl_order 
           NATURAL JOIN customer
-            WHERE order_id = :order_id
+            WHERE invoice_id = :invoice_id
             LIMIT 1
         ");
         $statement->execute(
           array(
-            ':order_id'       =>  $_GET["id"]
+            ':invoice_id'       =>  $_GET["id"]
             )
           );
         $result = $statement->fetchAll();
@@ -613,12 +590,12 @@ if(isset($_SESSION["email"])){
         ?>
         <script>
         $(document).ready(function(){
-          $('#order_no').val("<?php echo $row["order_no"]; ?>");
+          $('#invoice_no').val("<?php echo $row["invoice_no"]; ?>");
           $('#order_date').val("<?php echo $row["order_date"]; ?>");
           $('#status').val("<?php echo $row["payment_status"]; ?>");
           $('#CustomerId').val("<?php echo $row["CustomerId"]; ?>");
           $('#Fullname').val("<?php echo $row["Fullname"]; ?>");
-          $('#order_receiver_address').val("<?php echo $row["order_receiver_address"]; ?>");
+          $('#receiver_address').val("<?php echo $row["receiver_address"]; ?>");
         });
         </script>
         <form method="post" id="invoice_form">
@@ -635,11 +612,11 @@ if(isset($_SESSION["email"])){
                         <b>RECEIVER (BILL TO)</b><br />                        
                         <input type="hidden" name="CustomerId" id="CustomerId" class="form-control input-sm" placeholder="Enter Receiver Name" readonly/>
                         <input type="text" name="Fullnamme" id="Fullname" class="form-control input-sm" placeholder="Enter Receiver Name" readonly/>
-                        <textarea name="order_receiver_address" id="order_receiver_address" class="form-control" placeholder="Enter Billing Address"></textarea>
+                        <textarea name="receiver_address" id="receiver_address" class="form-control" placeholder="Enter Billing Address"></textarea>
                     </div>
                     <div class="col-md-4">
                       Reverse Charge<br />
-                      <input type="text" name="order_no" id="order_no" class="form-control input-sm" placeholder="Enter Invoice No." />
+                      <input type="text" name="invoice_no" id="invoice_no" class="form-control input-sm" placeholder="Enter Invoice No." />
                       <input type="text" name="order_date" id="order_date" class="form-control input-sm" readonly placeholder="Select Invoice Date" />
 					  <select name="status" id="status" class="form-control input-sm" required>
 					  <option value="Unpaid">Unpaid</option>
@@ -673,11 +650,11 @@ if(isset($_SESSION["email"])){
                     <?php
                     $statement = $connect->prepare("
                       SELECT * FROM tbl_order_item 
-                      WHERE order_id = :order_id
+                      WHERE invoice_id = :invoice_id
                     ");
                     $statement->execute(
                       array(
-                        ':order_id'       =>  $_GET["id"]
+                        ':invoice_id'       =>  $_GET["id"]
                       )
                     );
                     $item_result = $statement->fetchAll();
@@ -689,13 +666,13 @@ if(isset($_SESSION["email"])){
                     <tr>
                       <td><span id="sr_no"><?php echo $m; ?></span></td>
                       <td><input type="text" name="item_name[]" id="item_name<?php echo $m; ?>" class="form-control input-sm" value="<?php echo $sub_row["item_name"]; ?>" /></td>
-                      <td><input type="text" name="order_item_quantity[]" id="order_item_quantity<?php echo $m; ?>" data-srno="<?php echo $m; ?>" class="form-control input-sm order_item_quantity" value = "<?php echo $sub_row["order_item_quantity"]; ?>"/></td>
-                      <td><input type="text" name="order_item_price[]" id="order_item_price<?php echo $m; ?>" data-srno="<?php echo $m; ?>" class="form-control input-sm number_only order_item_price" value="<?php echo $sub_row["order_item_price"]; ?>" /></td>
-                      <td><input type="text" name="order_item_actual_amount[]" id="order_item_actual_amount<?php echo $m; ?>" data-srno="<?php echo $m; ?>" class="form-control input-sm order_item_actual_amount" value="<?php echo $sub_row["order_item_actual_amount"];?>" readonly /></td>
-                      <td><input type="text" name="order_item_tax1_rate[]" id="order_item_tax1_rate<?php echo $m; ?>" data-srno="<?php echo $m; ?>" class="form-control input-sm number_only order_item_tax1_rate" value="<?php echo $sub_row["order_item_tax1_rate"]; ?>" /></td>
-                      <td><input type="text" name="order_item_tax1_amount[]" id="order_item_tax1_amount<?php echo $m; ?>" data-srno="<?php echo $m; ?>" readonly class="form-control input-sm order_item_tax1_amount" value="<?php echo $sub_row["order_item_tax1_amount"];?>" /></td>
+                      <td><input type="text" name="item_quantity[]" id="item_quantity<?php echo $m; ?>" data-srno="<?php echo $m; ?>" class="form-control input-sm item_quantity" value = "<?php echo $sub_row["item_quantity"]; ?>"/></td>
+                      <td><input type="text" name="item_price[]" id="item_price<?php echo $m; ?>" data-srno="<?php echo $m; ?>" class="form-control input-sm number_only item_price" value="<?php echo $sub_row["item_price"]; ?>" /></td>
+                      <td><input type="text" name="item_actual_amount[]" id="item_actual_amount<?php echo $m; ?>" data-srno="<?php echo $m; ?>" class="form-control input-sm item_actual_amount" value="<?php echo $sub_row["item_actual_amount"];?>" readonly /></td>
+                      <td><input type="text" name="item_tax1_rate[]" id="item_tax1_rate<?php echo $m; ?>" data-srno="<?php echo $m; ?>" class="form-control input-sm number_only item_tax1_rate" value="<?php echo $sub_row["item_tax1_rate"]; ?>" /></td>
+                      <td><input type="text" name="item_tax1_amount[]" id="item_tax1_amount<?php echo $m; ?>" data-srno="<?php echo $m; ?>" readonly class="form-control input-sm item_tax1_amount" value="<?php echo $sub_row["item_tax1_amount"];?>" /></td>
                      
-                      <td><input type="text" name="order_item_final_amount[]" id="order_item_final_amount<?php echo $m; ?>" data-srno="<?php echo $m; ?>" readonly class="form-control input-sm order_item_final_amount" value="<?php echo $sub_row["order_item_final_amount"]; ?>" /></td>
+                      <td><input type="text" name="item_final_amount[]" id="item_final_amount<?php echo $m; ?>" data-srno="<?php echo $m; ?>" readonly class="form-control input-sm item_final_amount" value="<?php echo $sub_row["item_final_amount"]; ?>" /></td>
                       <td></td>
                     </tr>
                     <?php
@@ -706,7 +683,7 @@ if(isset($_SESSION["email"])){
               </tr>
               <tr>
                 <td align="right"><b>Total</td>
-                <td align="right"><b><span id="final_total_amt"><?php echo $row["order_total_after_tax"]; ?></span></b></td>
+                <td align="right"><b><span id="final_total_amt"><?php echo $row["total_after_tax"]; ?></span></b></td>
               </tr>
               <tr>
                 <td colspan="2"></td>
@@ -714,7 +691,7 @@ if(isset($_SESSION["email"])){
               <tr>
                 <td colspan="2" align="center">
                   <input type="hidden" name="total_item" id="total_item" value="<?php echo $m; ?>" />
-                  <input type="hidden" name="order_id" id="order_id" value="<?php echo $row["order_id"]; ?>" />
+                  <input type="hidden" name="invoice_id" id="invoice_id" value="<?php echo $row["invoice_id"]; ?>" />
                   <input type="submit" name="update_invoice" id="create_invoice" class="btn btn-info" value="Edit" />
                 </td>
               </tr>
@@ -735,14 +712,14 @@ if(isset($_SESSION["email"])){
           
           html_code += '<td><input type="text" name="item_name[]" id="item_name'+count+'" class="form-control input-sm" /></td>';
           
-          html_code += '<td><input type="text" name="order_item_quantity[]" id="order_item_quantity'+count+'" data-srno="'+count+'" class="form-control input-sm number_only order_item_quantity" /></td>';
-          html_code += '<td><input type="text" name="order_item_price[]" id="order_item_price'+count+'" data-srno="'+count+'" class="form-control input-sm number_only order_item_price" /></td>';
-          html_code += '<td><input type="text" name="order_item_actual_amount[]" id="order_item_actual_amount'+count+'" data-srno="'+count+'" class="form-control input-sm order_item_actual_amount" readonly /></td>';
+          html_code += '<td><input type="text" name="item_quantity[]" id="item_quantity'+count+'" data-srno="'+count+'" class="form-control input-sm number_only item_quantity" /></td>';
+          html_code += '<td><input type="text" name="item_price[]" id="item_price'+count+'" data-srno="'+count+'" class="form-control input-sm number_only item_price" /></td>';
+          html_code += '<td><input type="text" name="item_actual_amount[]" id="item_actual_amount'+count+'" data-srno="'+count+'" class="form-control input-sm item_actual_amount" readonly /></td>';
           
-          html_code += '<td><input type="text" name="order_item_tax1_rate[]" id="order_item_tax1_rate'+count+'" data-srno="'+count+'" class="form-control input-sm number_only order_item_tax1_rate" /></td>';
-          html_code += '<td><input type="text" name="order_item_tax1_amount[]" id="order_item_tax1_amount'+count+'" data-srno="'+count+'" readonly class="form-control input-sm order_item_tax1_amount" /></td>';
+          html_code += '<td><input type="text" name="item_tax1_rate[]" id="item_tax1_rate'+count+'" data-srno="'+count+'" class="form-control input-sm number_only item_tax1_rate" /></td>';
+          html_code += '<td><input type="text" name="item_tax1_amount[]" id="item_tax1_amount'+count+'" data-srno="'+count+'" readonly class="form-control input-sm item_tax1_amount" /></td>';
          
-          html_code += '<td><input type="text" name="order_item_final_amount[]" id="order_item_final_amount'+count+'" data-srno="'+count+'" readonly class="form-control input-sm order_item_final_amount" /></td>';
+          html_code += '<td><input type="text" name="item_final_amount[]" id="item_final_amount'+count+'" data-srno="'+count+'" readonly class="form-control input-sm item_final_amount" /></td>';
           html_code += '<td><button type="button" name="remove_row" id="'+count+'" class="btn btn-danger btn-xs remove_row">X</button></td>';
           html_code += '</tr>';
           $('#invoice-item-table').append(html_code);
@@ -750,7 +727,7 @@ if(isset($_SESSION["email"])){
         
         $(document).on('click', '.remove_row', function(){
           var row_id = $(this).attr("id");
-          var total_item_amount = $('#order_item_final_amount'+row_id).val();
+          var total_item_amount = $('#item_final_amount'+row_id).val();
           var final_amount = $('#final_total_amt').text();
           var result_amount = parseFloat(final_amount) - parseFloat(total_item_amount);
           $('#final_total_amt').text(result_amount);
@@ -771,35 +748,35 @@ if(isset($_SESSION["email"])){
             var tax1_amount = 0;
            
             var item_total = 0;
-            quantity = $('#order_item_quantity'+j).val();
+            quantity = $('#item_quantity'+j).val();
             if(quantity > 0)
             {
-              price = $('#order_item_price'+j).val();
+              price = $('#item_price'+j).val();
               if(price > 0)
               {
                 actual_amount = parseFloat(quantity) * parseFloat(price);
-                $('#order_item_actual_amount'+j).val(actual_amount);
-                tax1_rate = $('#order_item_tax1_rate'+j).val();
+                $('#item_actual_amount'+j).val(actual_amount);
+                tax1_rate = $('#item_tax1_rate'+j).val();
                 if(tax1_rate > 0)
                 {
                   tax1_amount = parseFloat(actual_amount)*parseFloat(tax1_rate)/100;
-                  $('#order_item_tax1_amount'+j).val(tax1_amount);
+                  $('#item_tax1_amount'+j).val(tax1_amount);
                 }
                
                 item_total = parseFloat(actual_amount) + parseFloat(tax1_amount);
                 final_item_total = parseFloat(final_item_total) + parseFloat(item_total);
-                $('#order_item_final_amount'+j).val(item_total);
+                $('#item_final_amount'+j).val(item_total);
               }
             }
           }
           $('#final_total_amt').text(final_item_total);
         }
 
-        $(document).on('blur', '.order_item_price', function(){
+        $(document).on('blur', '.item_price', function(){
           cal_final_total(count);
         });
 
-        $(document).on('blur', '.order_item_tax1_rate', function(){
+        $(document).on('blur', '.item_tax1_rate', function(){
           cal_final_total(count);
         });
 
@@ -812,7 +789,7 @@ if(isset($_SESSION["email"])){
             return false;
           }
 
-          if($.trim($('#order_no').val()).length == 0)
+          if($.trim($('#invoice_no').val()).length == 0)
           {
             alert("Please Enter Invoice Number");
             return false;
@@ -833,17 +810,17 @@ if(isset($_SESSION["email"])){
               return false;
             }
 
-            if($.trim($('#order_item_quantity'+no).val()).length == 0)
+            if($.trim($('#item_quantity'+no).val()).length == 0)
             {
               alert("Please Enter Quantity");
-              $('#order_item_quantity'+no).focus();
+              $('#item_quantity'+no).focus();
               return false;
             }
 
-            if($.trim($('#order_item_price'+no).val()).length == 0)
+            if($.trim($('#item_price'+no).val()).length == 0)
             {
               alert("Please Enter Price");
-              $('#order_item_price'+no).focus();
+              $('#item_price'+no).focus();
               return false;
             }
 
@@ -888,14 +865,14 @@ if(isset($_SESSION["email"])){
           {
             echo '
               <tr>
-                <td>'.$row["order_no"].'</td>
+                <td>'.$row["invoice_no"].'</td>
                 <td>'.$row["order_date"].'</td>
                 <td>'.$row["Fullname"].'</td>
-                <td>'.$row["order_total_after_tax"].'</td>
+                <td>'.$row["total_after_tax"].'</td>
                 <td>'.$row["payment_status"].'</td>
-                <td><a href="print_invoice.php?pdf=1&id='.$row["order_id"].'">PDF</a></td>
-                <td><a href="invoice.php?update=1&id='.$row["order_id"].'">Edit</a></td>
-                <td><a href="invoice.php?delete=1&id='.$row["order_id"].'" class="delete">Delete</span></a></td>
+                <td><a href="print_invoice.php?pdf=1&id='.$row["invoice_id"].'">PDF</a></td>
+                <td><a href="invoice.php?update=1&id='.$row["invoice_id"].'">Edit</a></td>
+                <td><a href="invoice.php?delete=1&id='.$row["invoice_id"].'" class="delete">Delete</span></a></td>
               </tr>
             ';
           }
