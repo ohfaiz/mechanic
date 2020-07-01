@@ -343,7 +343,7 @@ if(isset($_SESSION["email"])){
                             </li>
                          
                             <li class="nav-item">
-                                 <a href="logout.php" class="btn">
+                                 <a href="logout.php" class="btn btn">
                         <span class="fas fa-sign-out-alt" title="Logout"></span>
                     </a>
                             </li>
