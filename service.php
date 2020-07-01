@@ -185,6 +185,13 @@ if(isset($_SESSION["email"])){
 <!-- Custom styles for this page -->
   <link href="js-datatable/dataTables.bootstrap4.min.css" rel="stylesheet">
 
+    <!-- Page level plugins -->
+    <script src="js-datatable/jquery.dataTables.min.js"></script>
+    <script src="js-datatable/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="js-datatable/datatables-demo.js"></script>
+
    
 <script type="text/javascript">
         $(document).ready(function () {
