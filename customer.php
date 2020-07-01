@@ -129,12 +129,12 @@
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                           <thead>
                             <tr>
-							<th>No.</th>
+							
 							<th>Date Register</th>
 							<th>Customer Name</th>
 							<th>Phone Number</th>
   		
-            <th>Action</th>  
+            						<th>Action</th>  
                             </tr>
                           </thead>
                           <tbody>
