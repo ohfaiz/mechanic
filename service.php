@@ -128,46 +128,38 @@ if(isset($_SESSION["email"])){
                     <div class="card-body">
                       <div class="table-responsive">
 					  <div class="buttonaddstaff"><input type="submit" value="Add Services" onClick="document.location.href='add_service.php';"></br></div> 
-                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                       <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                           <thead>
                             <tr>
-                              <th>No.</th>
-            <th>Service Name</th>
-            <th>Description</th>
-			<th>Price</th>
-            <th>Action</th>  
+                            <th>Service Name</th>
+                            <th>Description</th>
+                            <th>Price</th>
+                            <th>Action</th> 
                             </tr>
                           </thead>
-                         
                           <tbody>
                             <?php
                                 $sql = "SELECT * FROM services";
-          $result = mysqli_query($con,$sql);
-          $x = 1;
-          if(mysqli_num_rows($result) > 0 )
-          {
-          while($row = mysqli_fetch_array($result))
-          {
+                                $result = mysqli_query($con,$sql);
+                                if(mysqli_num_rows($result) > 0 )
+                                {
+                                while($row = mysqli_fetch_array($result))
+                            {
                             ?>
 
-                            <form action="" method="post">
-          <tr>
-            <td><?php echo $x++ ?></td>
-           <td><?php echo $row['ServiceName'];?></td>
-		   <td><?php echo $row['Description'];?></td>
-		   <td><input type="text" name="Price" value="<?php echo $row['Price'];?>" /></td>
-            
-            <input name="ServiceId" autofocus required class="input" type="hidden" value="<?php echo $row['ServiceId']; ?>">
-            
-            
-            <td><input type="submit" name="update" value="Update"></td>
-          </tr>
-          </form>
-          <?php
-        }
-          }
-        ?>                          
-                          </tbody>
+                            <tr>
+                              <form action="" method="post">
+                              <td><input type="hidden" name="ServiceId" value="<?php echo $row['ServiceId'];?>"><?php echo $row['ServiceName'];?> </td>
+                              <td><?php echo $row['Description'];?></td>
+                              <td><input type="text" name="Price" value="<?php echo $row['Price'];?>" /></td>
+                              <td><input type="submit" name="update" value="Update"></td>  
+                              </form> 
+                            </tr> 
+                            <?php
+                              }
+                              }
+                            ?>   
+                          </tbody>                         
                         </table>
                       </div>
                     </div>
