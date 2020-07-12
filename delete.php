@@ -13,16 +13,7 @@ session_start();
 <body>
 
 <?php
-// Captcha
-if(empty($_SESSION['captcha'] ) ||
-	strcasecmp($_SESSION['captcha'], $_POST['captcha']) != 0)
-	{
-		//Note: the captcha code is compared case insensitively.
-		//if you want case sensitive match, update the check above to
-		// strcmp()
-		$errors = "<h3><font color=\"red\">Wrong code!</font></h3>";
-		echo $errors;
-	}
+
 	
 	if(empty($errors))
 	{
