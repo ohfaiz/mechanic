@@ -434,8 +434,7 @@ td.calendar-day, td.calendar-day-np {
 				</tr>
 			</table>
 			<p>
-			<img id="captchaimg3" src="captcha_code_file3.php?rand=<?php echo rand(); ?>" /><br>
-			<input id="captcha3" name="captcha3" required="" type="text" /></p>
+			
 			<input name="book" type="submit" value="Book" />
 		</form>
 		</td>
