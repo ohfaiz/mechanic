@@ -37,7 +37,7 @@ session_start();
   }
 
   else{
-      echo "<script>alert('Enter a valid location.');</script>";
+      echo "<script>alert('The security question has been answered.');</script>";
       echo "<meta http-equiv='refresh' content='0; url=question.php'/>";
 
   }
