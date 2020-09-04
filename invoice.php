@@ -373,8 +373,8 @@ if(isset($_SESSION["email"])){
                   <div class="row">
                     <div class="col-md-8">
 		      Mohd Abd Hadi Vejaya Bin Hj Saripan,<br />
-                      <b>Lot 4180, Jalan Ziton, Kg Pasir,
-		      Tampoi 81200, Johor Bahru, Johor</b><br />
+                      Lot 4180, Jalan Ziton, Kg Pasir,<br/>
+		      Tampoi 81200, Johor Bahru, Johor <br />
                       To,<br />
                         <b>RECEIVER (BILL TO)</b><br />
 						
@@ -634,9 +634,9 @@ if(isset($_SESSION["email"])){
                 <td colspan="2">
                   <div class="row">
                     <div class="col-md-8">
-			     Mohd Abd Hadi Vejaya Bin Hj Saripan,<br />
-                        <b>Lot 4180, Jalan Ziton, Kg Pasir,
-			   Tampoi 81200, Johor Bahru, Johor</b><br />
+		      Mohd Abd Hadi Vejaya Bin Hj Saripan,<br />
+                      Lot 4180, Jalan Ziton, Kg Pasir,<br/>
+		      Tampoi 81200, Johor Bahru, Johor <br />
                       To,<br />
                         <b>RECEIVER (BILL TO)</b><br />                        
                         <input type="hidden" name="CustomerId" id="CustomerId" class="form-control input-sm" placeholder="Enter Receiver Name" readonly/>
