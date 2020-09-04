@@ -33,7 +33,8 @@ if(isset($_GET["pdf"]) && isset($_GET["id"]))
          To,<br />
          <b>RECEIVER (BILL TO)</b><br />
          Name : '.$row["Fullname"].'<br /> 
-         Billing Address : '.$row["receiver_address"].'<br />
+         Billing Address :  Mohd Abd Hadi Vejaya Bin Hj Saripan,<br />
+                        <b>RECEIVER (BILL TO)</b><br /><br />
         </td>
         <td width="35%">
          Reverse Charge<br />
