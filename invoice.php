@@ -372,6 +372,9 @@ if(isset($_SESSION["email"])){
                 <td colspan="2">
                   <div class="row">
                     <div class="col-md-8">
+		      Mohd Abd Hadi Vejaya Bin Hj Saripan,<br />
+                      <b>Lot 4180, Jalan Ziton, Kg Pasir,
+		      Tampoi 81200, Johor Bahru, Johor</b><br />
                       To,<br />
                         <b>RECEIVER (BILL TO)</b><br />
 						
@@ -394,8 +397,7 @@ if(isset($_SESSION["email"])){
               <?php echo $name?>
 						</select>
 						
-                       Mohd Abd Hadi Vejaya Bin Hj Saripan,<br />
-                        <b>RECEIVER (BILL TO)</b><br />
+                      
                     </div>
                     <div class="col-md-4">
                       Reverse Charge<br />
@@ -632,12 +634,14 @@ if(isset($_SESSION["email"])){
                 <td colspan="2">
                   <div class="row">
                     <div class="col-md-8">
+			     Mohd Abd Hadi Vejaya Bin Hj Saripan,<br />
+                        <b>Lot 4180, Jalan Ziton, Kg Pasir,
+			   Tampoi 81200, Johor Bahru, Johor</b><br />
                       To,<br />
                         <b>RECEIVER (BILL TO)</b><br />                        
                         <input type="hidden" name="CustomerId" id="CustomerId" class="form-control input-sm" placeholder="Enter Receiver Name" readonly/>
                         <input type="text" name="Fullnamme" id="Fullname" class="form-control input-sm" placeholder="Enter Receiver Name" readonly/>
-                        Mohd Abd Hadi Vejaya Bin Hj Saripan,<br />
-                        <b>RECEIVER (BILL TO)</b><br />
+                       
                     </div>
                     <div class="col-md-4">
                       Reverse Charge<br />
