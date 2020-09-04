@@ -375,6 +375,7 @@ if(isset($_SESSION["email"])){
 		      Mohd Abd Hadi Vejaya Bin Hj Saripan,<br />
                       Lot 4180, Jalan Ziton, Kg Pasir,<br/>
 		      Tampoi 81200, Johor Bahru, Johor <br />
+			    <br/>
                       To,<br />
                         <b>RECEIVER (BILL TO)</b><br />
 						
@@ -637,6 +638,7 @@ if(isset($_SESSION["email"])){
 		      Mohd Abd Hadi Vejaya Bin Hj Saripan,<br />
                       Lot 4180, Jalan Ziton, Kg Pasir,<br/>
 		      Tampoi 81200, Johor Bahru, Johor <br />
+			    <br/>
                       To,<br />
                         <b>RECEIVER (BILL TO)</b><br />                        
                         <input type="hidden" name="CustomerId" id="CustomerId" class="form-control input-sm" placeholder="Enter Receiver Name" readonly/>
