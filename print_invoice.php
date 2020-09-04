@@ -30,11 +30,14 @@ if(isset($_GET["pdf"]) && isset($_GET["id"]))
       <table width="100%" cellpadding="5">
        <tr>
         <td width="65%">
+        Mohd Abd Hadi Vejaya Bin Hj Saripan,<br />
+                      Lot 4180, Jalan Ziton, Kg Pasir,<br/>
+		      Tampoi 81200, Johor Bahru, Johor <br />
+			    <br/>
          To,<br />
          <b>RECEIVER (BILL TO)</b><br />
          Name : '.$row["Fullname"].'<br /> 
-         Billing Address :  Mohd Abd Hadi Vejaya Bin Hj Saripan,<br />
-                        <b>RECEIVER (BILL TO)</b><br /><br />
+          
         </td>
         <td width="35%">
          Reverse Charge<br />
