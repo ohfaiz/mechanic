@@ -641,7 +641,7 @@ if(isset($_SESSION["email"])){
                     </div>
                     <div class="col-md-4">
                       Reverse Charge<br />
-                      <input type="text" name="invoice_no" id="invoice_no" class="form-control input-sm" placeholder="Enter Invoice No." />
+                      <input type="text" name="invoice_no" id="invoice_no" class="form-control input-sm" placeholder="Enter Invoice No." readonly />
                       <input type="text" name="order_date" id="order_date" class="form-control input-sm" readonly placeholder="Select Invoice Date" />
 					  <select name="status" id="status" class="form-control input-sm" required>
 					  <option value="Unpaid">Unpaid</option>
