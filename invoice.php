@@ -394,7 +394,8 @@ if(isset($_SESSION["email"])){
               <?php echo $name?>
 						</select>
 						
-                        <textarea name="receiver_name" id="receiver_name" class="form-control" placeholder="Enter Billing Address"></textarea>
+                       Mohd Abd Hadi Vejaya Bin Hj Saripan,<br />
+                        <b>RECEIVER (BILL TO)</b><br />
                     </div>
                     <div class="col-md-4">
                       Reverse Charge<br />
@@ -635,7 +636,8 @@ if(isset($_SESSION["email"])){
                         <b>RECEIVER (BILL TO)</b><br />                        
                         <input type="hidden" name="CustomerId" id="CustomerId" class="form-control input-sm" placeholder="Enter Receiver Name" readonly/>
                         <input type="text" name="Fullnamme" id="Fullname" class="form-control input-sm" placeholder="Enter Receiver Name" readonly/>
-                        <textarea name="receiver_name" id="receiver_name" class="form-control" placeholder="Enter Billing Address"></textarea>
+                        Mohd Abd Hadi Vejaya Bin Hj Saripan,<br />
+                        <b>RECEIVER (BILL TO)</b><br />
                     </div>
                     <div class="col-md-4">
                       Reverse Charge<br />
